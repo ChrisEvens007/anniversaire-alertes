@@ -1080,12 +1080,5 @@ const donnees =[
     "contact_parent": "01-96-78-77-89",
     "contact_personnel": ""
   },
-   {
-    "nom": "ALI",
-    "prenom": "Baba",
-    "date_naissance": "23/10/2010",
-    "contact_parent": "01-00-00-00-00",
-    "contact_personnel": ""
-  }
 ]]  
 
