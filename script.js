@@ -5,25 +5,17 @@ if ("Notification" in window) {
   });
 }
 
-// ✅ Charge le fichier JSON
-fetch("anniversaires.json")
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP : ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(donnees => {
-    console.log("Données chargées :", donnees);
-    verifierAnniversaires(donnees);
-  })
-  .catch(erreur => {
-    console.error("Erreur de chargement du fichier JSON :", erreur);
-    const zoneAlertes = document.getElementById("alertes");
-    if (zoneAlertes) {
-      zoneAlertes.innerHTML = `<p style="color:red;">❌ Impossible de charger les données d'anniversaire.</p>`;
-    }
-  });
+// ✅ Utilise les données directement depuis donnees.js
+if (typeof donneesAnniversaires !== "undefined") {
+  console.log("Données chargées :", donneesAnniversaires);
+  verifierAnniversaires(donneesAnniversaires);
+} else {
+  console.error("Les données d'anniversaire ne sont pas disponibles.");
+  const zoneAlertes = document.getElementById("alertes");
+  if (zoneAlertes) {
+    zoneAlertes.innerHTML = `<p style="color:red;">❌ Impossible de charger les données d'anniversaire.</p>`;
+  }
+}
 
 // ✅ Calcule la date de demain au format JJ/MM
 function calculerDateDemain() {
