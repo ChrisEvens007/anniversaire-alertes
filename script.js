@@ -9,7 +9,7 @@ if ("Notification" in window) {
 fetch("anniversaires.json")
   .then(response => {
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      throw new Error(`Erreur HTTP : ${response.status}`);
     }
     return response.json();
   })
@@ -19,6 +19,10 @@ fetch("anniversaires.json")
   })
   .catch(erreur => {
     console.error("Erreur de chargement du fichier JSON :", erreur);
+    const zoneAlertes = document.getElementById("alertes");
+    if (zoneAlertes) {
+      zoneAlertes.innerHTML = `<p style="color:red;">❌ Impossible de charger les données d'anniversaire.</p>`;
+    }
   });
 
 // ✅ Calcule la date de demain au format JJ/MM
@@ -33,6 +37,7 @@ function calculerDateDemain() {
 // ✅ Vérifie les anniversaires dans les données
 function verifierAnniversaires(donnees) {
   const dateDemain = calculerDateDemain();
+  let alertesTrouvées = false;
 
   donnees.forEach(personne => {
     if (!personne.date_naissance) return;
@@ -44,8 +49,13 @@ function verifierAnniversaires(donnees) {
 
     if (datePersonne === dateDemain) {
       afficherAlerte(personne);
+      alertesTrouvées = true;
     }
   });
+
+  if (!alertesTrouvées) {
+    console.log("Aucun anniversaire pour demain.");
+  }
 }
 
 // ✅ Affiche l’alerte dans le volet HTML + notification système
