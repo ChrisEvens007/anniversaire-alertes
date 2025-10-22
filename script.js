@@ -7,9 +7,14 @@ if ("Notification" in window) {
 
 // ✅ Charge le fichier JSON
 fetch("anniversaires.json")
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(donnees => {
-    console.log(donnees); // pour tester
+    console.log("Données chargées :", donnees);
     verifierAnniversaires(donnees);
   })
   .catch(erreur => {
@@ -30,7 +35,11 @@ function verifierAnniversaires(donnees) {
   const dateDemain = calculerDateDemain();
 
   donnees.forEach(personne => {
+    if (!personne.date_naissance) return;
+
     const [jour, mois] = personne.date_naissance.split("/");
+    if (!jour || !mois) return;
+
     const datePersonne = `${jour.padStart(2, '0')}/${mois.padStart(2, '0')}`;
 
     if (datePersonne === dateDemain) {
@@ -42,6 +51,10 @@ function verifierAnniversaires(donnees) {
 // ✅ Affiche l’alerte dans le volet HTML + notification système
 function afficherAlerte(personne) {
   const zoneAlertes = document.getElementById("alertes");
+  if (!zoneAlertes) {
+    console.warn("Élément #alertes introuvable dans le HTML.");
+    return;
+  }
 
   const alerte = document.createElement("div");
   alerte.className = "alerte";
