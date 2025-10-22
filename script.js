@@ -6,16 +6,15 @@ if ("Notification" in window) {
 }
 
 // ✅ Utilise les données directement depuis donnees.js
-if (typeof donneesAnniversaires !== "undefined") {
-  console.log("Données chargées :", donneesAnniversaires);
-  verifierAnniversaires(donneesAnniversaires);
-} else {
-  console.error("Les données d'anniversaire ne sont pas disponibles.");
-  const zoneAlertes = document.getElementById("alertes");
-  if (zoneAlertes) {
-    zoneAlertes.innerHTML = `<p style="color:red;">❌ Impossible de charger les données d'anniversaire.</p>`;
+document.addEventListener("DOMContentLoaded", () => {
+  if (Array.isArray(donneesAnniversaires)) {
+    console.log("Données chargées :", donneesAnniversaires);
+    verifierAnniversaires(donneesAnniversaires);
+  } else {
+    console.error("Les données d'anniversaire ne sont pas disponibles.");
+    afficherErreur("❌ Impossible de charger les données d'anniversaire.");
   }
-}
+});
 
 // ✅ Calcule la date de demain au format JJ/MM
 function calculerDateDemain() {
@@ -46,11 +45,12 @@ function verifierAnniversaires(donnees) {
   });
 
   if (!alertesTrouvées) {
+    afficherMessage("✅ Aucun anniversaire prévu pour demain.");
     console.log("Aucun anniversaire pour demain.");
   }
 }
 
-// ✅ Affiche l’alerte dans le volet HTML + notification système
+// ✅ Affiche une alerte HTML + notification système
 function afficherAlerte(personne) {
   const zoneAlertes = document.getElementById("alertes");
   if (!zoneAlertes) {
@@ -75,5 +75,21 @@ function afficherAlerte(personne) {
       body: `Demain c’est l’anniversaire de ${personne.prenom} ${personne.nom}`,
       icon: "icone.png" // facultatif
     });
+  }
+}
+
+// ✅ Affiche un message informatif dans la page
+function afficherMessage(message) {
+  const zoneAlertes = document.getElementById("alertes");
+  if (zoneAlertes) {
+    zoneAlertes.innerHTML = `<p style="color:green;">${message}</p>`;
+  }
+}
+
+// ✅ Affiche une erreur dans la page
+function afficherErreur(message) {
+  const zoneAlertes = document.getElementById("alertes");
+  if (zoneAlertes) {
+    zoneAlertes.innerHTML = `<p style="color:red;">${message}</p>`;
   }
 }
