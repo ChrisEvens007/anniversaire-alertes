@@ -93,3 +93,33 @@ function afficherErreur(message) {
     zoneAlertes.innerHTML = `<p style="color:red;">${message}</p>`;
   }
 }
+function genererICS(donnees) {
+  let contenuICS = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Anniversaires Alertes//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+`;
+
+  donnees.forEach(personne => {
+    const [jour, mois, annee] = personne.date_naissance.split("/");
+    const uid = `${personne.nom}-${personne.prenom}@alertes`;
+
+    contenuICS += `BEGIN:VEVENT
+UID:${uid}
+SUMMARY:Anniversaire de ${personne.prenom} ${personne.nom}
+DTSTART;VALUE=DATE:${annee}${mois}${jour}
+RRULE:FREQ=YEARLY
+DESCRIPTION:Contact parent: ${personne.contact_parent || "N/A"}, personnel: ${personne.contact_personnel || "N/A"}
+END:VEVENT
+`;
+  });
+
+  contenuICS += `END:VCALENDAR`;
+
+  const blob = new Blob([contenuICS], { type: "text/calendar" });
+  const lien = document.createElement("a");
+  lien.href = URL.createObjectURL(blob);
+  lien.download = "anniversaires.ics";
+  lien.click();
+}
