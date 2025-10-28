@@ -131,7 +131,6 @@ END:VEVENT
   lien.download = "anniversaires.ics";
   lien.click();
 }
-
 // ✅ Navigation entre vues : demain, semaine, mois
 let vueActuelle = 0;
 
