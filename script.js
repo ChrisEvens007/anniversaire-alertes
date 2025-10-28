@@ -5,14 +5,41 @@ if ("Notification" in window) {
   });
 }
 
-// ✅ Chargement des données
+// ✅ Vue active
+let vueActuelle = 0;
+
+// ✅ Chargement initial
 document.addEventListener("DOMContentLoaded", () => {
   if (Array.isArray(donneesAnniversaires)) {
-    verifierAnniversaires(donneesAnniversaires);
+    afficherVueActuelle();
   } else {
     afficherErreur("❌ Impossible de charger les données d'anniversaire.");
   }
 });
+
+// ✅ Affiche la vue en cours
+function afficherVueActuelle() {
+  document.getElementById("alertes").innerHTML = "";
+
+  if (vueActuelle === 0) {
+    verifierAnniversaires(donneesAnniversaires);
+  } else if (vueActuelle === 1) {
+    afficherAnniversairesSemaine(donneesAnniversaires);
+  } else {
+    afficherAnniversairesMois(donneesAnniversaires);
+  }
+}
+
+// ✅ Navigation entre vues
+function afficherVueSuivante() {
+  vueActuelle = (vueActuelle + 1) % 3;
+  afficherVueActuelle();
+}
+
+function afficherVuePrecedente() {
+  vueActuelle = (vueActuelle - 1 + 3) % 3;
+  afficherVueActuelle();
+}
 
 // ✅ Date de demain au format JJ/MM
 function calculerDateDemain() {
@@ -24,13 +51,57 @@ function calculerDateDemain() {
 // ✅ Vue "Demain"
 function verifierAnniversaires(donnees) {
   const dateDemain = calculerDateDemain();
-  let alertes = donnees.filter(p => {
+  const alertes = donnees.filter(p => {
     const [j, m] = p.date_naissance.split("/");
     return `${j.padStart(2, '0')}/${m.padStart(2, '0')}` === dateDemain;
   });
 
   if (alertes.length === 0) {
     afficherMessage("✅ Aucun anniversaire prévu pour demain.");
+  } else {
+    alertes.forEach(afficherAlerte);
+  }
+}
+
+// ✅ Vue "Semaine"
+function afficherAnniversairesSemaine(donnees) {
+  const aujourdHui = new Date();
+  const datesSemaine = [];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(aujourdHui.getTime());
+    d.setDate(aujourdHui.getDate() + i);
+    const jour = String(d.getDate()).padStart(2, '0');
+    const mois = String(d.getMonth() + 1).padStart(2, '0');
+    datesSemaine.push(`${jour}/${mois}`);
+  }
+
+  const alertes = donnees.filter(p => {
+    const [j, m] = p.date_naissance.split("/");
+    const date = `${j.padStart(2, '0')}/${m.padStart(2, '0')}`;
+    return datesSemaine.includes(date);
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire cette semaine.");
+  } else {
+    alertes.forEach(afficherAlerte);
+  }
+  console.log("Dates de la semaine :", datesSemaine);
+console.log("Date de chaque personne :", p.date_naissance);
+}
+
+// ✅ Vue "Mois"
+function afficherAnniversairesMois(donnees) {
+  const moisActuel = new Date().getMonth() + 1;
+
+  const alertes = donnees.filter(p => {
+    const [j, m] = p.date_naissance.split("/");
+    return parseInt(m) === moisActuel;
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
   } else {
     alertes.forEach(afficherAlerte);
   }
@@ -63,6 +134,7 @@ function afficherMessage(msg) {
   const zone = document.getElementById("alertes");
   if (zone) zone.innerHTML = `<p style="color:green;">${msg}</p>`;
 }
+
 function afficherErreur(msg) {
   const zone = document.getElementById("alertes");
   if (zone) zone.innerHTML = `<p style="color:red;">${msg}</p>`;
@@ -104,75 +176,4 @@ END:VEVENT
   lien.href = URL.createObjectURL(blob);
   lien.download = "anniversaires.ics";
   lien.click();
-}
-
-// ✅ Navigation entre vues
-let vueActuelle = 0;
-
-function afficherVueSuivante() {
-  vueActuelle = (vueActuelle + 1) % 3;
-  document.getElementById("alertes").innerHTML = "";
-
-  if (vueActuelle === 0) {
-    verifierAnniversaires(donneesAnniversaires);
-  } else if (vueActuelle === 1) {
-    afficherAnniversairesSemaine(donneesAnniversaires);
-  } else {
-    afficherAnniversairesMois(donneesAnniversaires);
-  }
-}
-
-function afficherVuePrecedente() {
-  vueActuelle = (vueActuelle - 1 + 3) % 3;
-  document.getElementById("alertes").innerHTML = "";
-
-  if (vueActuelle === 0) {
-    verifierAnniversaires(donneesAnniversaires);
-  } else if (vueActuelle === 1) {
-    afficherAnniversairesSemaine(donneesAnniversaires);
-  } else {
-    afficherAnniversairesMois(donneesAnniversaires);
-  }
-}
-
-// ✅ Vue "Semaine"
-function afficherAnniversairesSemaine(donnees) {
-  const aujourdHui = new Date();
-  const datesSemaine = [];
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(aujourdHui);
-    d.setDate(aujourdHui.getDate() + i);
-    const jour = String(d.getDate()).padStart(2, '0');
-    const mois = String(d.getMonth() + 1).padStart(2, '0');
-    datesSemaine.push(`${jour}/${mois}`);
-  }
-
-  const alertes = donnees.filter(p => {
-    const [j, m] = p.date_naissance.split("/");
-    const date = `${j.padStart(2, '0')}/${m.padStart(2, '0')}`;
-    return datesSemaine.includes(date);
-  });
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire cette semaine.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
-}
-
-// ✅ Vue "Mois"
-function afficherAnniversairesMois(donnees) {
-  const moisActuel = new Date().getMonth() + 1;
-
-  const alertes = donnees.filter(p => {
-    const [j, m] = p.date_naissance.split("/");
-    return parseInt(m) === moisActuel;
-  });
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
 }
