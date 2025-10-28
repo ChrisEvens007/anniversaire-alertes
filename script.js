@@ -93,7 +93,7 @@ function afficherErreur(message) {
   }
 }
 
-// ✅ Génère un fichier ICS avec rappels
+// ✅ Génère un fichier ICS avec rappels valides
 function genererICS(donnees) {
   let contenuICS = `BEGIN:VCALENDAR
 VERSION:2.0
@@ -102,14 +102,16 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 `;
 
+  const anneeActuelle = new Date().getFullYear();
+
   donnees.forEach(personne => {
-    const [jour, mois, annee] = personne.date_naissance.split("/");
+    const [jour, mois] = personne.date_naissance.split("/");
     const uid = `${personne.nom}-${personne.prenom}@alertes`;
 
     contenuICS += `BEGIN:VEVENT
 UID:${uid}
 SUMMARY:Anniversaire de ${personne.prenom} ${personne.nom}
-DTSTART;VALUE=DATE:${annee}${mois}${jour}
+DTSTART;VALUE=DATE:${anneeActuelle}${mois}${jour}
 RRULE:FREQ=YEARLY
 DESCRIPTION:Contact parent: ${personne.contact_parent || "N/A"}, personnel: ${personne.contact_personnel || "N/A"}
 BEGIN:VALARM
@@ -165,7 +167,7 @@ function afficherAnniversairesSemaine(donnees) {
   const joursSuivants = [];
 
   for (let i = 0; i < 7; i++) {
-    const d = new Date();
+    const d = new Date(aujourdHui);
     d.setDate(aujourdHui.getDate() + i);
     const jour = String(d.getDate()).padStart(2, '0');
     const mois = String(d.getMonth() + 1).padStart(2, '0');
