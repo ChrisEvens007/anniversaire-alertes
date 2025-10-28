@@ -180,4 +180,39 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     afficherErreur("Impossible de charger les données d'anniversaire.");
   }
+  document.getElementById("formAjout").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const nouveau = {
+    prenom: document.getElementById("prenom").value.trim(),
+    nom: document.getElementById("nom").value.trim(),
+    date_naissance: document.getElementById("date").value.trim(),
+    contact_parent: document.getElementById("contact_parent").value.trim(),
+    contact_personnel: document.getElementById("contact_personnel").value.trim()
+  };
+
+  donneesAnniversaires.push(nouveau);
+  afficherMessage(`✅ ${nouveau.prenom} ${nouveau.nom} ajouté(e) !`);
+  verifierAnniversaires(donneesAnniversaires);
+  afficherAnniversairesSemaine(donneesAnniversaires);
+  afficherAnniversairesMois(donneesAnniversaires);
+});
+document.getElementById("formSuppression").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const nomASupprimer = document.getElementById("nomSuppression").value.trim().toLowerCase();
+  const avant = donneesAnniversaires.length;
+
+  donneesAnniversaires = donneesAnniversaires.filter(p => p.nom.toLowerCase() !== nomASupprimer);
+
+  const apres = donneesAnniversaires.length;
+  if (avant === apres) {
+    afficherErreur(`❌ Aucun nom "${nomASupprimer}" trouvé.`);
+  } else {
+    afficherMessage(`🗑️ Nom "${nomASupprimer}" retiré.`);
+    verifierAnniversaires(donneesAnniversaires);
+    afficherAnniversairesSemaine(donneesAnniversaires);
+    afficherAnniversairesMois(donneesAnniversaires);
+  }
+});
 });
