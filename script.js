@@ -46,23 +46,19 @@ function verifierAnniversaires(donnees) {
 
   if (!alertesTrouvées) {
     afficherMessage("✅ Aucun anniversaire prévu pour demain.");
-    console.log("Aucun anniversaire pour demain.");
   }
 }
 
 // ✅ Affiche une alerte HTML + notification système
 function afficherAlerte(personne) {
   const zoneAlertes = document.getElementById("alertes");
-  if (!zoneAlertes) {
-    console.warn("Élément #alertes introuvable dans le HTML.");
-    return;
-  }
+  if (!zoneAlertes) return;
 
   const alerte = document.createElement("div");
   alerte.className = "alerte";
 
   alerte.innerHTML = `
-    <p>🎉 Demain c’est l’anniversaire de <strong>${personne.prenom} ${personne.nom}</strong></p>
+    <p>🎉 Anniversaire de <strong>${personne.prenom} ${personne.nom}</strong></p>
     ${personne.contact_personnel ? `<p>📱 Personnel : <a href="tel:${personne.contact_personnel}">${personne.contact_personnel}</a></p>` : ""}
     ${personne.contact_parent ? `<p>👨‍👩‍👧 Parent : <a href="tel:${personne.contact_parent}">${personne.contact_parent}</a></p>` : ""}
   `;
@@ -131,6 +127,7 @@ END:VEVENT
   lien.download = "anniversaires.ics";
   lien.click();
 }
+
 // ✅ Navigation entre vues : demain, semaine, mois
 let vueActuelle = 0;
 
@@ -160,13 +157,13 @@ function afficherVuePrecedente() {
   }
 }
 
-// ✅ Anniversaires de la semaine (corrigé)
+// ✅ Anniversaires de la semaine (corrigé et fiable)
 function afficherAnniversairesSemaine(donnees) {
   const aujourdHui = new Date();
   const joursSuivants = [];
 
   for (let i = 0; i < 7; i++) {
-    const d = new Date(aujourdHui.getTime()); // copie exacte
+    const d = new Date(aujourdHui.getTime());
     d.setDate(aujourdHui.getDate() + i);
     const jour = String(d.getDate()).padStart(2, '0');
     const mois = String(d.getMonth() + 1).padStart(2, '0');
