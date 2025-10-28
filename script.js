@@ -146,40 +146,6 @@ function afficherVueSuivante() {
   }
 }
 
-// ✅ Anniversaires de la semaine
-function afficherAnniversairesSemaine(donnees) {
-  const aujourdHui = new Date();
-  const dateFin = new Date();
-  dateFin.setDate(aujourdHui.getDate() + 7);
-
-  const alertes = donnees.filter(p => {
-    const [jour, mois] = p.date_naissance.split("/");
-    const dateAnniv = new Date(aujourdHui.getFullYear(), mois - 1, jour);
-    return dateAnniv >= aujourdHui && dateAnniv <= dateFin;
-  });
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire cette semaine.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
-}
-
-// ✅ Anniversaires du mois
-function afficherAnniversairesMois(donnees) {
-  const moisActuel = new Date().getMonth() + 1;
-
-  const alertes = donnees.filter(p => {
-    const [jour, mois] = p.date_naissance.split("/");
-    return parseInt(mois) === moisActuel;
-  });
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
-}
 function afficherVuePrecedente() {
   vueActuelle = (vueActuelle - 1 + 3) % 3;
   document.getElementById("alertes").innerHTML = "";
@@ -190,5 +156,47 @@ function afficherVuePrecedente() {
     afficherAnniversairesSemaine(donneesAnniversaires);
   } else {
     afficherAnniversairesMois(donneesAnniversaires);
+  }
+}
+
+// ✅ Anniversaires de la semaine (corrigé)
+function afficherAnniversairesSemaine(donnees) {
+  const aujourdHui = new Date();
+  const joursSuivants = [];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(aujourdHui.getDate() + i);
+    const jour = String(d.getDate()).padStart(2, '0');
+    const mois = String(d.getMonth() + 1).padStart(2, '0');
+    joursSuivants.push(`${jour}/${mois}`);
+  }
+
+  const alertes = donnees.filter(p => {
+    const [jour, mois] = p.date_naissance.split("/");
+    const datePersonne = `${jour.padStart(2, '0')}/${mois.padStart(2, '0')}`;
+    return joursSuivants.includes(datePersonne);
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire cette semaine.");
+  } else {
+    alertes.forEach(afficherAlerte);
+  }
+}
+
+// ✅ Anniversaires du mois (sécurisé)
+function afficherAnniversairesMois(donnees) {
+  const moisActuel = new Date().getMonth() + 1;
+
+  const alertes = donnees.filter(p => {
+    const [jour, mois] = p.date_naissance.split("/");
+    return mois && parseInt(mois) === moisActuel;
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
+  } else {
+    alertes.forEach(afficherAlerte);
   }
 }
