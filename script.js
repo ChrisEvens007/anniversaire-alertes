@@ -167,7 +167,7 @@ function afficherAnniversairesSemaine(donnees) {
   const joursSuivants = [];
 
   for (let i = 0; i < 7; i++) {
-    const d = new Date(aujourdHui);
+    const d = new Date(aujourdHui.getTime()); // copie exacte
     d.setDate(aujourdHui.getDate() + i);
     const jour = String(d.getDate()).padStart(2, '0');
     const mois = String(d.getMonth() + 1).padStart(2, '0');
