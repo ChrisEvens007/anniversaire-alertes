@@ -5,84 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alertes Anniversaires</title>
   <style>
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    padding: 20px;
-    background: linear-gradient(to right, #e3f2fd, #ffffff);
-    color: #333;
-  }
-
-  h1 {
-    color: #1565c0;
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 30px;
-  }
-
-  .alerte {
-    background-color: #e3f2fd;
-    border-left: 6px solid #2196f3;
-    padding: 15px 20px;
-    margin: 15px auto;
-    border-radius: 8px;
-    max-width: 600px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.4s ease-in-out;
-  }
-
-  .alerte p {
-    margin: 6px 0;
-    font-size: 1rem;
-  }
-
-  a {
-    color: #0d47a1;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  button {
-    display: block;
-    margin: 30px auto;
-    background-color: #1976d2;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #0d47a1;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #e3f2fd, #ffffff);
+      color: #333;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    h1 {
+      color: #1565c0;
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 10px;
     }
-  }
-</style>
+
+    #titre-vue {
+      text-align: center;
+      color: #1976d2;
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .alerte {
+      background-color: #e3f2fd;
+      border-left: 6px solid #2196f3;
+      padding: 15px 20px;
+      margin: 15px auto;
+      border-radius: 8px;
+      max-width: 600px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .alerte p {
+      margin: 6px 0;
+      font-size: 1rem;
+    }
+
+    a {
+      color: #0d47a1;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>Alertes Anniversaires</h1>
+  <h2 id="titre-vue"></h2>
   <div id="alertes"></div>
 
-  <!-- ✅ Charge les données depuis donnees.js -->
+  <!-- ✅ Charge les données -->
   <script src="donnees.js"></script>
-
   <!-- ✅ Script principal -->
   <script src="script.js"></script>
+
   <button onclick="genererICS(donneesAnniversaires)">📅 Télécharger les anniversaires dans mon agenda</button>
   <button onclick="afficherVuePrecedente()">⬅️ Précédent</button>
   <button onclick="afficherVueSuivante()">➡️ Suivant</button>
