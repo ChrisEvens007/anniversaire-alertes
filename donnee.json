@@ -494,8 +494,8 @@
     "prenom": "Immaculée",
     "date_naissance": "08/12/2008",
     "contact_parent": "01-92-38-41-07",
-    "contact_personnel": ""
-},
+    "contact_personnel": ""}
+ ,
   {
     "nom": "DANHOUME",
     "prenom": "Anaïs",
@@ -531,4 +531,5 @@
     "contact_parent": "01-96-78-77-89",
     "contact_personnel":"" 
   }
+  
 ]
