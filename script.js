@@ -1,161 +1,190 @@
-// ✅ Notifications système
+// ✅ Vérifie que les notifications sont disponibles
 if ("Notification" in window) {
   Notification.requestPermission().then(permission => {
     console.log("Permission de notification :", permission);
   });
 }
 
-// ✅ Vue active
-let vueActuelle = 0;
-
-// ✅ Chargement initial
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof donneesAnniversaires !== "undefined" && Array.isArray(donneesAnniversaires)) {
-    console.log("✅ Données bien chargées :", donneesAnniversaires);
-    afficherVueActuelle();
-  } else {
-    afficherErreur("❌ Les données d'anniversaire ne sont pas disponibles.");
-  }
-});
-
-// ✅ Affiche la vue en cours
-function afficherVueActuelle() {
-  document.getElementById("alertes").innerHTML = "";
-  mettreAJourTitreVue();
-
-  if (vueActuelle === 0) {
-    verifierAnniversaires(donneesAnniversaires);
-  } else if (vueActuelle === 1) {
-    afficherAnniversairesSemaine(donneesAnniversaires);
-  } else {
-    afficherAnniversairesMois(donneesAnniversaires);
-  }
-}
-
-// ✅ Titre dynamique
-function mettreAJourTitreVue() {
-  const titre = document.getElementById("titre-vue");
-  if (!titre) return;
-
-  if (vueActuelle === 0) {
-    titre.textContent = "🎯 Anniversaires de demain";
-  } else if (vueActuelle === 1) {
-    titre.textContent = "📅 Anniversaires de la semaine";
-  } else {
-    titre.textContent = "🗓️ Anniversaires du mois";
-  }
-}
-
-// ✅ Navigation entre vues
-function afficherVueSuivante() {
-  vueActuelle = (vueActuelle + 1) % 3;
-  afficherVueActuelle();
-}
-
-function afficherVuePrecedente() {
-  vueActuelle = (vueActuelle - 1 + 3) % 3;
-  afficherVueActuelle();
-}
-
-// ✅ Date de demain au format JJ/MM
+// ✅ Calcule la date de demain au format JJ/MM
 function calculerDateDemain() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+  const aujourdHui = new Date();
+  aujourdHui.setDate(aujourdHui.getDate() + 1);
+  const jour = String(aujourdHui.getDate()).padStart(2, "0");
+  const mois = String(aujourdHui.getMonth() + 1).padStart(2, "0");
+  return `${jour}/${mois}`;
 }
 
-// ✅ Vue "Demain"
+// ✅ Vérifie les anniversaires dans les données
 function verifierAnniversaires(donnees) {
   const dateDemain = calculerDateDemain();
-  const alertes = donnees.filter(p => {
-    const [j, m] = p.date_naissance.split("/");
-    return `${j.padStart(2, '0')}/${m.padStart(2, '0')}` === dateDemain;
-  });
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire prévu pour demain.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
-}
-
-// ✅ Vue "Semaine"
-function afficherAnniversairesSemaine(donnees) {
   const aujourdHui = new Date();
-  const datesSemaine = [];
+  const jourActuel = String(aujourdHui.getDate()).padStart(2, "0");
+  const moisActuel = String(aujourdHui.getMonth() + 1).padStart(2, "0");
+  const dateAujourdhui = `${jourActuel}/${moisActuel}`;
 
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(aujourdHui.getTime());
-    d.setDate(aujourdHui.getDate() + i);
-    const jour = String(d.getDate()).padStart(2, '0');
-    const mois = String(d.getMonth() + 1).padStart(2, '0');
-    datesSemaine.push(`${jour}/${mois}`);
-  }
+  let alertesTrouvees = false;
 
-  const alertes = donnees.filter(p => {
-    const [j, m] = p.date_naissance.split("/");
-    const date = `${j.padStart(2, '0')}/${m.padStart(2, '0')}`;
-    console.log("Date de chaque personne :", date);
-    return datesSemaine.includes(date);
+  donnees.forEach(personne => {
+    if (!personne.date_naissance) return;
+
+    const [jour, mois] = personne.date_naissance.split("/");
+    if (!jour || !mois) return;
+
+    const datePersonne = `${jour.padStart(2, "0")}/${mois.padStart(2, "0")}`;
+
+    // 🎂 Anniversaire aujourd’hui
+    if (datePersonne === dateAujourdhui) {
+      afficherAlerte(personne, true);
+      alertesTrouvees = true;
+    }
+    // 🎉 Anniversaire demain
+    else if (datePersonne === dateDemain) {
+      afficherAlerte(personne, false);
+      alertesTrouvees = true;
+    }
   });
 
-  console.log("Dates de la semaine :", datesSemaine);
-
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire cette semaine.");
-  } else {
-    alertes.forEach(afficherAlerte);
+  if (!alertesTrouvees) {
+    afficherMessage("✅ Aucun anniversaire aujourd’hui ni demain.");
+    console.log("Aucun anniversaire pour aujourd’hui ni demain.");
   }
 }
 
-// ✅ Vue "Mois"
-function afficherAnniversairesMois(donnees) {
-  const moisActuel = new Date().getMonth() + 1;
+// ✅ Affiche une alerte HTML + notification système
+function afficherAlerte(personne, aujourdhui = false) {
+  const zoneAlertes = document.getElementById("alertes");
+  if (!zoneAlertes) return;
 
-  const alertes = donnees.filter(p => {
-    const [j, m] = p.date_naissance.split("/");
-    return parseInt(m) === moisActuel;
-  });
+  const alerte = document.createElement("div");
+  alerte.className = "alerte";
 
-  if (alertes.length === 0) {
-    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
-  } else {
-    alertes.forEach(afficherAlerte);
-  }
-}
+  const titre = aujourdhui
+    ? `🎂 Aujourd’hui c’est l’anniversaire de <strong>${personne.prenom} ${personne.nom}</strong> !`
+    : `🎉 Demain c’est l’anniversaire de <strong>${personne.prenom} ${personne.nom}</strong> !`;
 
-// ✅ Affichage d'une alerte
-function afficherAlerte(personne) {
-  const zone = document.getElementById("alertes");
-  if (!zone) return;
-
-  const bloc = document.createElement("div");
-  bloc.className = "alerte";
-  bloc.innerHTML = `
-    <p>🎉 Anniversaire de <strong>${personne.prenom} ${personne.nom}</strong></p>
+  alerte.innerHTML = `
+    <p>${titre}</p>
     ${personne.contact_personnel ? `<p>📱 Personnel : <a href="tel:${personne.contact_personnel}">${personne.contact_personnel}</a></p>` : ""}
     ${personne.contact_parent ? `<p>👨‍👩‍👧 Parent : <a href="tel:${personne.contact_parent}">${personne.contact_parent}</a></p>` : ""}
   `;
-  zone.appendChild(bloc);
+
+  zoneAlertes.appendChild(alerte);
 
   if (Notification.permission === "granted") {
-    new Notification("🎉 Anniversaire demain !", {
-      body: `Demain c’est l’anniversaire de ${personne.prenom} ${personne.nom}`,
-      icon: "icone.png"
-    });
+    new Notification(
+      aujourdhui ? "🎂 Anniversaire aujourd’hui !" : "🎉 Anniversaire demain !",
+      { body: `${personne.prenom} ${personne.nom}`, icon: "icone.png" }
+    );
   }
 }
 
-// ✅ Messages
-function afficherMessage(msg) {
-  const zone = document.getElementById("alertes");
-  if (zone) {
-    zone.innerHTML = `<p style="color:green;">${msg}</p>`;
-  }
+// ✅ Affiche un message informatif
+function afficherMessage(message) {
+  const zoneAlertes = document.getElementById("alertes");
+  if (zoneAlertes) zoneAlertes.innerHTML = `<p style="color:green;">${message}</p>`;
 }
-function afficherErreur(msg) {
-  const zone = document.getElementById("alertes");
-  if (zone) {
-    zone.innerHTML = `<p style="color:red;">${msg}</p>`;
-  }
+
+// ✅ Affiche une erreur
+function afficherErreur(message) {
+  const zoneAlertes = document.getElementById("alertes");
+  if (zoneAlertes) zoneAlertes.innerHTML = `<p style="color:red;">${message}</p>`;
 }
+
+// ✅ Génère un fichier ICS avec rappels
+function genererICS(donnees) {
+  let contenuICS = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Anniversaires Alertes//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+`;
+
+  donnees.forEach(personne => {
+    if (!personne.date_naissance) return;
+
+    const [jour, mois] = personne.date_naissance.split("/");
+    if (!jour || !mois) return;
+
+    const uid = `${personne.nom}-${personne.prenom}@alertes`;
+    const annee = new Date().getFullYear();
+
+    contenuICS += `BEGIN:VEVENT
+UID:${uid}
+SUMMARY:Anniversaire de ${personne.prenom} ${personne.nom}
+DTSTART;VALUE=DATE:${annee}${mois}${jour}
+RRULE:FREQ=YEARLY
+DESCRIPTION:Contact parent: ${personne.contact_parent || "N/A"}, personnel: ${personne.contact_personnel || "N/A"}
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Rappel: Anniversaire demain !
+END:VALARM
+END:VEVENT
+`;
+  });
+
+  contenuICS += `END:VCALENDAR`;
+
+  const blob = new Blob([contenuICS], { type: "text/calendar" });
+  const lien = document.createElement("a");
+  lien.href = URL.createObjectURL(blob);
+  lien.download = "anniversaires.ics";
+  lien.click();
+}
+
+// ✅ Affiche les anniversaires de la semaine
+function afficherAnniversairesSemaine(donnees) {
+  const aujourdHui = new Date();
+  const jourSemaine = aujourdHui.getDay();
+  const debutSemaine = new Date(aujourdHui);
+  debutSemaine.setDate(aujourdHui.getDate() - (jourSemaine === 0 ? 6 : jourSemaine - 1));
+  const finSemaine = new Date(debutSemaine);
+  finSemaine.setDate(debutSemaine.getDate() + 6);
+
+  const alertesSemaine = donnees.filter(p => {
+    if (!p.date_naissance) return false;
+    const [jour, mois] = p.date_naissance.split("/");
+    const date = new Date(new Date().getFullYear(), mois - 1, jour);
+    return date >= debutSemaine && date <= finSemaine;
+  });
+
+  const zone = document.getElementById("semaines");
+  zone.innerHTML = alertesSemaine.length
+    ? alertesSemaine.map(p => `
+        <div class="alerte">
+          <p>🎂 ${p.prenom} ${p.nom} — ${p.date_naissance}</p>
+          ${p.contact_personnel ? `<p>📱 ${p.contact_personnel}</p>` : ""}
+        </div>
+      `).join("")
+    : "<p>Aucun anniversaire cette semaine.</p>";
+}
+
+// ✅ Affiche les anniversaires du mois
+function afficherAnniversairesMois(donnees) {
+  const moisActuel = new Date().getMonth() + 1;
+  const alertesMois = donnees.filter(p => {
+    if (!p.date_naissance) return false;
+    const [, mois] = p.date_naissance.split("/");
+    return parseInt(mois) === moisActuel;
+  });
+
+  const zone = document.getElementById("mois");
+  zone.innerHTML = alertesMois.length
+    ? alertesMois.map(p => `
+        <div class="alerte">
+          <p>🎉 ${p.prenom} ${p.nom} — ${p.date_naissance}</p>
+        </div>
+      `).join("")
+    : "<p>Aucun anniversaire ce mois-ci.</p>";
+}
+
+// ✅ Appel automatique après chargement
+document.addEventListener("DOMContentLoaded", () => {
+  if (Array.isArray(donneesAnniversaires)) {
+    verifierAnniversaires(donneesAnniversaires);
+    afficherAnniversairesSemaine(donneesAnniversaires);
+    afficherAnniversairesMois(donneesAnniversaires);
+  } else {
+    afficherErreur("Impossible de charger les données d'anniversaire.");
+  }
+});

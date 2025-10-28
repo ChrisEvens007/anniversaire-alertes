@@ -1,4 +1,4 @@
-const donneesAnniversaires =[
+const donneesAnniversaires = [
   {
     "nom": "AMOUSSOU",
     "prenom": "David-Marie",
@@ -19,9 +19,8 @@ const donneesAnniversaires =[
     "date_naissance": "09/01/2012",
     "contact_parent": "01-95-81-10-08",
     "contact_personnel": ""
-  }
-,[]
-,{
+  },
+  {
     "nom": "HOUNLEKPO",
     "prenom": "Fabrice",
     "date_naissance": "20/01/2012",
@@ -78,27 +77,27 @@ const donneesAnniversaires =[
     "contact_personnel": ""
   },
   {
-   "nom": "DOSSOU",
+    "nom": "DOSSOU",
     "prenom": "Gabriel",
     "date_naissance": "03/02/2015",
     "contact_parent": "01-94-69-45-55",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AKOUEDEGNI",
     "prenom": "Urbine",
     "date_naissance": "18/02/2010",
     "contact_parent": "01-65-10-02-01",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "GUEZODJE",
     "prenom": "Honestine",
     "date_naissance": "27/02/2010",
     "contact_parent": "01-95-66-35-10",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AMOUSSOU",
     "prenom": "Raël",
     "date_naissance": "02/03/2014",
@@ -112,7 +111,7 @@ const donneesAnniversaires =[
     "contact_parent": "",
     "contact_personnel": "01-94-43-15-82"
   },
-   {
+  {
     "nom": "AYEDAYO",
     "prenom": "Modestie",
     "date_naissance": "12/03/2013",
@@ -133,7 +132,7 @@ const donneesAnniversaires =[
     "contact_parent": "",
     "contact_personnel": "01-40-12-99-29"
   },
-   {
+  {
     "nom": "TCHINKOUN",
     "prenom": "Milka",
     "date_naissance": "23/03/2006",
@@ -154,14 +153,14 @@ const donneesAnniversaires =[
     "contact_parent": "01-97-43-74-89",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AFFOUGNON",
     "prenom": "Alphonso",
     "date_naissance": "07/04/2008",
     "contact_parent": "",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "NUGLOZE",
     "prenom": "Daniel",
     "date_naissance": "08/04/2009",
@@ -175,21 +174,21 @@ const donneesAnniversaires =[
     "contact_parent": "01-97-90-21-84",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AWO",
     "prenom": "Trésor",
     "date_naissance": "23/04/2016",
     "contact_parent": "01-97-57-83-45",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "ADJAGBA",
     "prenom": "Pénielle",
     "date_naissance": "15/05/2012",
     "contact_parent": "01-41-72-03-03",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "EKLU",
     "prenom": "Sélom",
     "date_naissance": "17/05/2010",
@@ -210,14 +209,14 @@ const donneesAnniversaires =[
     "contact_parent": "",
     "contact_personnel": "01-44-79-76-88"
   },
-   {
+  {
     "nom": "AHOUANGBENON",
     "prenom": "Romance",
     "date_naissance": "21/05/2012",
     "contact_parent": "01-97-32-29-19",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "ATINDEHOU",
     "prenom": "Doriane",
     "date_naissance": "27/05/2012",
@@ -259,21 +258,21 @@ const donneesAnniversaires =[
     "contact_parent": "01-97-48-48-97",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "DEGAN",
     "prenom": "Marline",
     "date_naissance": "12/06/2010",
     "contact_parent": "01-95-42-58-75",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "OTIMI ADJIMONTI",
     "prenom": "Jéhudiel",
     "date_naissance": "16/06/2015",
     "contact_parent": "01-97-43-74-89",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "ACACHA",
     "prenom": "Irenée",
     "date_naissance": "28/06/2012",
@@ -301,21 +300,21 @@ const donneesAnniversaires =[
     "contact_parent": "01-62-68-30-83",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "ATTEDE",
     "prenom": "Georges",
     "date_naissance": "09/07/2014",
     "contact_parent": "01-95-81-10-08",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "GUEDENON",
     "prenom": "Chancelle",
     "date_naissance": "13/07/2012",
     "contact_parent": "01-97-32-54-00",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AGONVINON",
     "prenom": "Méryl",
     "date_naissance": "25/07/2014",
@@ -350,7 +349,7 @@ const donneesAnniversaires =[
     "contact_parent": "01-96-16-04-75",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "MAYABA",
     "prenom": "Kristen",
     "date_naissance": "07/08/2010",
@@ -364,7 +363,7 @@ const donneesAnniversaires =[
     "contact_parent": "01-97-68-84-03",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "GUEDENON",
     "prenom": "Immaculée",
     "date_naissance": "14/08/2014",
@@ -413,14 +412,14 @@ const donneesAnniversaires =[
     "contact_parent": "01-64-01-58-48",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "SOUDE",
     "prenom": "Bénelle",
     "date_naissance": "22/09/2010",
     "contact_parent": "01-97-64-48-77",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "HEKPAZO",
     "prenom": "Fabiola",
     "date_naissance": "24/09/2009",
@@ -441,7 +440,7 @@ const donneesAnniversaires =[
     "contact_parent": "",
     "contact_personnel": "01-42-75-22-44"
   },
-   {
+  {
     "nom": "ALLOGNON",
     "prenom": "Salomon",
     "date_naissance": "09/10/2009",
@@ -462,15 +461,14 @@ const donneesAnniversaires =[
     "contact_parent": "01-60-88-85-23",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AKOUETE",
     "prenom": "Marc-André",
     "date_naissance": "29/10/2005",
     "contact_parent": "",
     "contact_personnel": "01-98-14-81-66"
   },
-  
-   {
+  {
     "nom": "AWO",
     "prenom": "Marie-Miracle",
     "date_naissance": "30/10/2012",
@@ -481,29 +479,29 @@ const donneesAnniversaires =[
     "nom": "ADJAHOSSIN",
     "prenom": "Uriel",
     "date_naissance": "03/11/2010",
-    "contact_parent": "01-97-57-23-34",
+    "contact_parent": "01-97-32-53-31",
     "contact_personnel": ""
   },
-   {
+  {
     "nom": "AKOUEDEGNI",
     "prenom": "Peace",
     "date_naissance": "09/11/2010",
     "contact_parent": "01-65-10-02-01",
-    "contact_personnel": ""
+    "contact_personnel":"" 
   },
   {
-    "nom": "GANGNY",
+    "nom": "GANGNI",
     "prenom": "Immaculée",
     "date_naissance": "08/12/2008",
-    "contact_parent": "01-97-48-07-49",
-    "contact_personnel": ""
-  },
-   {
+    "contact_parent": "01-92-38-41-07",
+    "contact_personnel": ""}
+ ,
+  {
     "nom": "DANHOUME",
     "prenom": "Anaïs",
     "date_naissance": "11/12/2008",
     "contact_parent": "01-67-30-93-54",
-    "contact_personnel": ""
+    "contact_personnel":"" 
   },
   {
     "nom": "AYEDAYO",
@@ -512,10 +510,9 @@ const donneesAnniversaires =[
     "contact_parent": "",
     "contact_personnel": "01-56-56-21-88"
   },
-   
   {
     "nom": "FANDY",
-    "prenom":"Kafui",
+    "prenom": "Kafui",
     "date_naissance": "21/12/2006",
     "contact_parent": "",
     "contact_personnel": "01-41-78-70-88"
@@ -525,22 +522,13 @@ const donneesAnniversaires =[
     "prenom": "Octinel",
     "date_naissance": "25/12/2010",
     "contact_parent": "01-97-77-66-39",
-    "contact_personnel": ""
+    "contact_personnel":"" 
   },
-  
-    {
+  {
     "nom": "KANGNI",
     "prenom": "Hillary",
     "date_naissance": "30/12/2009",
     "contact_parent": "01-96-78-77-89",
-    "contact_personnel": ""
+    "contact_personnel":"" 
   },
-  {
-  "nom": "ALI",
-  "prenom": "Baba",
-  "date_naissance": "23/10/2010",
-  "contact_parent": "97-00-00-00",
-  "contact_personnel": "97-11-11-11"
-},
-]
-
+];
