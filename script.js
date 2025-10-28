@@ -25,7 +25,7 @@ function calculerDateDemain() {
   return `${jour}/${mois}`;
 }
 
-// ✅ Vérifie les anniversaires dans les données
+// ✅ Vérifie les anniversaires pour demain
 function verifierAnniversaires(donnees) {
   const dateDemain = calculerDateDemain();
   let alertesTrouvées = false;
@@ -69,11 +69,10 @@ function afficherAlerte(personne) {
 
   zoneAlertes.appendChild(alerte);
 
-  // ✅ Notification système
   if (Notification.permission === "granted") {
     new Notification("🎉 Anniversaire demain !", {
       body: `Demain c’est l’anniversaire de ${personne.prenom} ${personne.nom}`,
-      icon: "icone.png" // facultatif
+      icon: "icone.png"
     });
   }
 }
@@ -93,6 +92,8 @@ function afficherErreur(message) {
     zoneAlertes.innerHTML = `<p style="color:red;">${message}</p>`;
   }
 }
+
+// ✅ Génère un fichier ICS avec rappels
 function genererICS(donnees) {
   let contenuICS = `BEGIN:VCALENDAR
 VERSION:2.0
@@ -111,6 +112,11 @@ SUMMARY:Anniversaire de ${personne.prenom} ${personne.nom}
 DTSTART;VALUE=DATE:${annee}${mois}${jour}
 RRULE:FREQ=YEARLY
 DESCRIPTION:Contact parent: ${personne.contact_parent || "N/A"}, personnel: ${personne.contact_personnel || "N/A"}
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Rappel: Anniversaire demain !
+END:VALARM
 END:VEVENT
 `;
   });
@@ -122,4 +128,67 @@ END:VEVENT
   lien.href = URL.createObjectURL(blob);
   lien.download = "anniversaires.ics";
   lien.click();
+}
+
+// ✅ Navigation entre vues : demain, semaine, mois
+let vueActuelle = 0;
+
+function afficherVueSuivante() {
+  vueActuelle = (vueActuelle + 1) % 3;
+  document.getElementById("alertes").innerHTML = "";
+
+  if (vueActuelle === 0) {
+    verifierAnniversaires(donneesAnniversaires);
+  } else if (vueActuelle === 1) {
+    afficherAnniversairesSemaine(donneesAnniversaires);
+  } else {
+    afficherAnniversairesMois(donneesAnniversaires);
+  }
+}
+
+// ✅ Anniversaires de la semaine
+function afficherAnniversairesSemaine(donnees) {
+  const aujourdHui = new Date();
+  const dateFin = new Date();
+  dateFin.setDate(aujourdHui.getDate() + 7);
+
+  const alertes = donnees.filter(p => {
+    const [jour, mois] = p.date_naissance.split("/");
+    const dateAnniv = new Date(aujourdHui.getFullYear(), mois - 1, jour);
+    return dateAnniv >= aujourdHui && dateAnniv <= dateFin;
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire cette semaine.");
+  } else {
+    alertes.forEach(afficherAlerte);
+  }
+}
+
+// ✅ Anniversaires du mois
+function afficherAnniversairesMois(donnees) {
+  const moisActuel = new Date().getMonth() + 1;
+
+  const alertes = donnees.filter(p => {
+    const [jour, mois] = p.date_naissance.split("/");
+    return parseInt(mois) === moisActuel;
+  });
+
+  if (alertes.length === 0) {
+    afficherMessage("✅ Aucun anniversaire ce mois-ci.");
+  } else {
+    alertes.forEach(afficherAlerte);
+  }
+}
+function afficherVuePrecedente() {
+  vueActuelle = (vueActuelle - 1 + 3) % 3;
+  document.getElementById("alertes").innerHTML = "";
+
+  if (vueActuelle === 0) {
+    verifierAnniversaires(donneesAnniversaires);
+  } else if (vueActuelle === 1) {
+    afficherAnniversairesSemaine(donneesAnniversaires);
+  } else {
+    afficherAnniversairesMois(donneesAnniversaires);
+  }
 }
