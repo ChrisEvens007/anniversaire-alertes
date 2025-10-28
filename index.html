@@ -40,22 +40,23 @@ button:hover { background-color: #0d47a1; }
 </head>
 <body>
 
-<h1>Alertes Anniversaires</h1>
+  <h1>Alertes Anniversaires</h1>
 
-<div id="alertes"></div>
+  <div id="alertes"></div>
 
-<h2>🎂 Anniversaires de la semaine</h2>
-<div id="semaines"></div>
+  <h2>🎂 Anniversaires de la semaine</h2>
+  <div id="semaines"></div>
 
-<h2>📅 Anniversaires du mois</h2>
-<div id="mois"></div>
+  <h2>📅 Anniversaires du mois</h2>
+  <div id="mois"></div>
 
-<!-- Charge les données depuis donnees.js -->
-<script src="donnees.js"></script>
-<!-- Script principal -->
-<script src="script.js"></script>
+  <!-- Charge les données depuis donnees.js -->
+  <script src="donnees.js"></script>
+  <!-- Script principal -->
+  <script src="script.js"></script>
 
-<button onclick="genererICS(donneesAnniversaires)">📅 Télécharger les anniversaires dans mon agenda</button>
+  <!-- Bouton qui déclenche le téléchargement -->
+  <button onclick="telechargerICS()">📅 Télécharger les anniversaires dans mon agenda</button>
 
 </body>
 </html>

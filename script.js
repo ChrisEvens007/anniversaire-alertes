@@ -32,13 +32,10 @@ function verifierAnniversaires(donnees) {
 
     const datePersonne = `${jour.padStart(2, "0")}/${mois.padStart(2, "0")}`;
 
-    // 🎂 Anniversaire aujourd’hui
     if (datePersonne === dateAujourdhui) {
       afficherAlerte(personne, true);
       alertesTrouvees = true;
-    }
-    // 🎉 Anniversaire demain
-    else if (datePersonne === dateDemain) {
+    } else if (datePersonne === dateDemain) {
       afficherAlerte(personne, false);
       alertesTrouvees = true;
     }
@@ -92,44 +89,23 @@ function afficherErreur(message) {
 
 // ✅ Génère un fichier ICS avec rappels
 function genererICS(donnees) {
-  let contenuICS = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Anniversaires Alertes//FR
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-`;
+  let ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Anniversaires//FR\n";
 
   donnees.forEach(personne => {
-    if (!personne.date_naissance) return;
+    const [jour, mois, annee] = personne.date_naissance.split('/');
+    const date = `${annee}${mois}${jour}`;
+    const nomComplet = `${personne.prenom} ${personne.nom}`;
 
-    const [jour, mois] = personne.date_naissance.split("/");
-    if (!jour || !mois) return;
-
-    const uid = `${personne.nom}-${personne.prenom}@alertes`;
-    const annee = new Date().getFullYear();
-
-    contenuICS += `BEGIN:VEVENT
-UID:${uid}
-SUMMARY:Anniversaire de ${personne.prenom} ${personne.nom}
-DTSTART;VALUE=DATE:${annee}${mois}${jour}
-RRULE:FREQ=YEARLY
-DESCRIPTION:Contact parent: ${personne.contact_parent || "N/A"}, personnel: ${personne.contact_personnel || "N/A"}
-BEGIN:VALARM
-TRIGGER:-P1D
-ACTION:DISPLAY
-DESCRIPTION:Rappel: Anniversaire demain !
-END:VALARM
-END:VEVENT
-`;
+    ics += `BEGIN:VEVENT\n`;
+    ics += `SUMMARY:Anniversaire de ${nomComplet}\n`;
+    ics += `DTSTART;VALUE=DATE:${date}\n`;
+    ics += `RRULE:FREQ=YEARLY\n`;
+    ics += `DESCRIPTION:Contact parent: ${personne.contact_parent}\n`;
+    ics += `END:VEVENT\n`;
   });
 
-  contenuICS += `END:VCALENDAR`;
-
-  const blob = new Blob([contenuICS], { type: "text/calendar" });
-  const lien = document.createElement("a");
-  lien.href = URL.createObjectURL(blob);
-  lien.download = "anniversaires.ics";
-  lien.click();
+  ics += "END:VCALENDAR";
+  return ics;
 }
 
 // ✅ Affiche les anniversaires de la semaine
@@ -176,6 +152,23 @@ function afficherAnniversairesMois(donnees) {
         </div>
       `).join("")
     : "<p>Aucun anniversaire ce mois-ci.</p>";
+}
+
+// ✅ Fonction de téléchargement accessible globalement
+function telechargerICS() {
+  fetch('donnee.json')
+    .then(response => response.json())
+    .then(data => {
+      const contenuICS = genererICS(data);
+      const blob = new Blob([contenuICS], { type: "text/calendar" });
+      const lien = document.createElement("a");
+      lien.href = URL.createObjectURL(blob);
+      lien.download = "anniversaires.ics";
+      document.body.appendChild(lien);
+      lien.click();
+      document.body.removeChild(lien);
+    })
+    .catch(error => console.error("Erreur de chargement JSON :", error));
 }
 
 // ✅ Appel automatique après chargement
