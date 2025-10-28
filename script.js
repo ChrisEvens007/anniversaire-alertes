@@ -10,16 +10,18 @@ let vueActuelle = 0;
 
 // ✅ Chargement initial
 document.addEventListener("DOMContentLoaded", () => {
-  if (Array.isArray(donneesAnniversaires)) {
+  if (typeof donneesAnniversaires !== "undefined" && Array.isArray(donneesAnniversaires)) {
+    console.log("✅ Données bien chargées :", donneesAnniversaires);
     afficherVueActuelle();
   } else {
-    afficherErreur("❌ Impossible de charger les données d'anniversaire.");
+    afficherErreur("❌ Les données d'anniversaire ne sont pas disponibles.");
   }
 });
 
 // ✅ Affiche la vue en cours
 function afficherVueActuelle() {
   document.getElementById("alertes").innerHTML = "";
+  mettreAJourTitreVue();
 
   if (vueActuelle === 0) {
     verifierAnniversaires(donneesAnniversaires);
@@ -27,6 +29,20 @@ function afficherVueActuelle() {
     afficherAnniversairesSemaine(donneesAnniversaires);
   } else {
     afficherAnniversairesMois(donneesAnniversaires);
+  }
+}
+
+// ✅ Titre dynamique
+function mettreAJourTitreVue() {
+  const titre = document.getElementById("titre-vue");
+  if (!titre) return;
+
+  if (vueActuelle === 0) {
+    titre.textContent = "🎯 Anniversaires de demain";
+  } else if (vueActuelle === 1) {
+    titre.textContent = "📅 Anniversaires de la semaine";
+  } else {
+    titre.textContent = "🗓️ Anniversaires du mois";
   }
 }
 
@@ -79,16 +95,17 @@ function afficherAnniversairesSemaine(donnees) {
   const alertes = donnees.filter(p => {
     const [j, m] = p.date_naissance.split("/");
     const date = `${j.padStart(2, '0')}/${m.padStart(2, '0')}`;
+    console.log("Date de chaque personne :", date);
     return datesSemaine.includes(date);
   });
+
+  console.log("Dates de la semaine :", datesSemaine);
 
   if (alertes.length === 0) {
     afficherMessage("✅ Aucun anniversaire cette semaine.");
   } else {
     alertes.forEach(afficherAlerte);
   }
-  console.log("Dates de la semaine :", datesSemaine);
-console.log("Date de chaque personne :", p.date_naissance);
 }
 
 // ✅ Vue "Mois"
@@ -132,48 +149,13 @@ function afficherAlerte(personne) {
 // ✅ Messages
 function afficherMessage(msg) {
   const zone = document.getElementById("alertes");
-  if (zone) zone.innerHTML = `<p style="color:green;">${msg}</p>`;
+  if (zone) {
+    zone.innerHTML = `<p style="color:green;">${msg}</p>`;
+  }
 }
-
 function afficherErreur(msg) {
   const zone = document.getElementById("alertes");
-  if (zone) zone.innerHTML = `<p style="color:red;">${msg}</p>`;
-}
-
-// ✅ Génération ICS avec rappels
-function genererICS(donnees) {
-  let contenu = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Anniversaires Alertes//FR
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-`;
-  const annee = new Date().getFullYear();
-
-  donnees.forEach(p => {
-    const [j, m] = p.date_naissance.split("/");
-    const uid = `${p.nom}-${p.prenom}@alertes`;
-
-    contenu += `BEGIN:VEVENT
-UID:${uid}
-SUMMARY:Anniversaire de ${p.prenom} ${p.nom}
-DTSTART;VALUE=DATE:${annee}${m}${j}
-RRULE:FREQ=YEARLY
-DESCRIPTION:Contact parent: ${p.contact_parent || "N/A"}, personnel: ${p.contact_personnel || "N/A"}
-BEGIN:VALARM
-TRIGGER:-P1D
-ACTION:DISPLAY
-DESCRIPTION:Rappel: Anniversaire demain !
-END:VALARM
-END:VEVENT
-`;
-  });
-
-  contenu += `END:VCALENDAR`;
-
-  const blob = new Blob([contenu], { type: "text/calendar" });
-  const lien = document.createElement("a");
-  lien.href = URL.createObjectURL(blob);
-  lien.download = "anniversaires.ics";
-  lien.click();
+  if (zone) {
+    zone.innerHTML = `<p style="color:red;">${msg}</p>`;
+  }
 }
