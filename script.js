@@ -11,7 +11,7 @@ function calculerDateDemain() {
   aujourdHui.setDate(aujourdHui.getDate() + 1);
   const jour = String(aujourdHui.getDate()).padStart(2, "0");
   const mois = String(aujourdHui.getMonth() + 1).padStart(2, "0");
-  return `${jour}/${mois}`;
+  return `${jour}/${mois}`;  
 }
 
 // ✅ Vérifie les anniversaires dans les données
@@ -171,48 +171,18 @@ function telechargerICS() {
     .catch(error => console.error("Erreur de chargement JSON :", error));
 }
 
-// ✅ Appel automatique après chargement
-document.addEventListener("DOMContentLoaded", () => {
-  if (Array.isArray(donneesAnniversaires)) {
+// ✅ Chargement automatique du fichier JSON
+let donneesAnniversaires = [];
+
+fetch('donnee.json')
+  .then(response => response.json())
+  .then(data => {
+    donneesAnniversaires = data;
     verifierAnniversaires(donneesAnniversaires);
     afficherAnniversairesSemaine(donneesAnniversaires);
     afficherAnniversairesMois(donneesAnniversaires);
-  } else {
-    afficherErreur("Impossible de charger les données d'anniversaire.");
-  }
-  document.getElementById("formAjout").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const nouveau = {
-    prenom: document.getElementById("prenom").value.trim(),
-    nom: document.getElementById("nom").value.trim(),
-    date_naissance: document.getElementById("date").value.trim(),
-    contact_parent: document.getElementById("contact_parent").value.trim(),
-    contact_personnel: document.getElementById("contact_personnel").value.trim()
-  };
-
-  donneesAnniversaires.push(nouveau);
-  afficherMessage(`✅ ${nouveau.prenom} ${nouveau.nom} ajouté(e) !`);
-  verifierAnniversaires(donneesAnniversaires);
-  afficherAnniversairesSemaine(donneesAnniversaires);
-  afficherAnniversairesMois(donneesAnniversaires);
+  })
+  .catch((error) => {
+  console.error("Erreur de chargement du fichier JSON :", error);
 });
-document.getElementById("formSuppression").addEventListener("submit", function(e) {
-  e.preventDefault();
 
-  const nomASupprimer = document.getElementById("nomSuppression").value.trim().toLowerCase();
-  const avant = donneesAnniversaires.length;
-
-  donneesAnniversaires = donneesAnniversaires.filter(p => p.nom.toLowerCase() !== nomASupprimer);
-
-  const apres = donneesAnniversaires.length;
-  if (avant === apres) {
-    afficherErreur(`❌ Aucun nom "${nomASupprimer}" trouvé.`);
-  } else {
-    afficherMessage(`🗑️ Nom "${nomASupprimer}" retiré.`);
-    verifierAnniversaires(donneesAnniversaires);
-    afficherAnniversairesSemaine(donneesAnniversaires);
-    afficherAnniversairesMois(donneesAnniversaires);
-  }
-});
-});
