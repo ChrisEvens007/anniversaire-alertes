@@ -60,7 +60,16 @@ app.post("/ajouter", (req, res) => {
   }
 
   const donnees = lireDonnees();
-  donnees.push({ prenom, nom, date_naissance, contact_parent, contact_personnel });
+  const nouvelleEntree = {
+    prenom,
+    nom,
+    date_naissance,
+    contact_parent,
+    contact_personnel,
+    date_ajout: new Date().toISOString() // 🕒 Ajout automatique
+  };
+
+  donnees.push(nouvelleEntree);
   ecrireDonnees(donnees);
 
   console.log(`✅ Ajout de ${prenom} ${nom}`);
@@ -88,6 +97,38 @@ app.post("/supprimer", (req, res) => {
     console.log(`🗑️ ${nom} supprimé.`);
     res.json({ message: `🗑️ ${nom} supprimé avec succès.`, donnees });
   }
+  app.get("/telecharger", (req, res) => {
+  const { depuis } = req.query;
+  const donnees = lireDonnees();
+
+  let filtrées = donnees;
+
+  if (depuis) {
+    const dateLimite = new Date(depuis);
+    filtrées = donnees.filter(p => {
+      const ajout = new Date(p.date_ajout);
+      return ajout >= dateLimite;
+    });
+  }
+
+  const evenements = filtrées.map(p => ({
+    title: `Anniversaire de ${p.prenom} ${p.nom}`,
+    start: p.date_naissance.split("-").map(Number),
+    duration: { days: 1 },
+    description: `Souhaiter un joyeux anniversaire à ${p.prenom} !`,
+  }));
+
+  createEvents(evenements, (error, value) => {
+    if (error) {
+      console.error("❌ Erreur ICS :", error);
+      return res.status(500).send("Erreur lors de la génération du fichier .ics");
+    }
+
+    res.setHeader("Content-Disposition", "attachment; filename=anniversaires.ics");
+    res.setHeader("Content-Type", "text/calendar");
+    res.send(value);
+  });
+});
 });
 
 // ===========================

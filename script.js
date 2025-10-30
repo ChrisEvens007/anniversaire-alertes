@@ -154,21 +154,19 @@ function afficherAnniversairesMois(donnees) {
     : "<p>Aucun anniversaire ce mois-ci.</p>";
 }
 
-// ✅ Fonction de téléchargement accessible globalement
+
 function telechargerICS() {
-  fetch('donnee.json')
-    .then(response => response.json())
-    .then(data => {
-      const contenuICS = genererICS(data);
-      const blob = new Blob([contenuICS], { type: "text/calendar" });
-      const lien = document.createElement("a");
-      lien.href = URL.createObjectURL(blob);
-      lien.download = "anniversaires.ics";
-      document.body.appendChild(lien);
-      lien.click();
-      document.body.removeChild(lien);
-    })
-    .catch(error => console.error("Erreur de chargement JSON :", error));
+  const date = prompt("Entrez la date de mise à jour (YYYY-MM-DD) :", "2025-10-01");
+  if (!date) return;
+
+  const url = `https://anniversaire-alertes-api.onrender.com/telecharger?depuis=${date}`;
+
+  const lien = document.createElement("a");
+  lien.href = url;
+  lien.download = "anniversaires.ics";
+  document.body.appendChild(lien);
+  lien.click();
+  document.body.removeChild(lien);
 }
 
 // ✅ Chargement automatique du fichier JSON
