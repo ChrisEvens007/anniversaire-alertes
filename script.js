@@ -1,3 +1,5 @@
+const baseURL = "https://anniversaire-alertes-api.onrender.com";
+
 // ✅ Vérifie que les notifications sont disponibles
 if ("Notification" in window) {
   Notification.requestPermission().then(permission => {
@@ -87,27 +89,6 @@ function afficherErreur(message) {
   if (zoneAlertes) zoneAlertes.innerHTML = `<p style="color:red;">${message}</p>`;
 }
 
-// ✅ Génère un fichier ICS avec rappels
-function genererICS(donnees) {
-  let ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Anniversaires//FR\n";
-
-  donnees.forEach(personne => {
-    const [jour, mois, annee] = personne.date_naissance.split('/');
-    const date = `${annee}${mois}${jour}`;
-    const nomComplet = `${personne.prenom} ${personne.nom}`;
-
-    ics += `BEGIN:VEVENT\n`;
-    ics += `SUMMARY:Anniversaire de ${nomComplet}\n`;
-    ics += `DTSTART;VALUE=DATE:${date}\n`;
-    ics += `RRULE:FREQ=YEARLY\n`;
-    ics += `DESCRIPTION:Contact parent: ${personne.contact_parent}\n`;
-    ics += `END:VEVENT\n`;
-  });
-
-  ics += "END:VCALENDAR";
-  return ics;
-}
-
 // ✅ Affiche les anniversaires de la semaine
 function afficherAnniversairesSemaine(donnees) {
   const aujourdHui = new Date();
@@ -154,13 +135,12 @@ function afficherAnniversairesMois(donnees) {
     : "<p>Aucun anniversaire ce mois-ci.</p>";
 }
 
-
+// ✅ Téléchargement ICS filtré
 function telechargerICS() {
   const date = prompt("Entrez la date de mise à jour (YYYY-MM-DD) :", "2025-10-01");
   if (!date) return;
 
-  const url = `https://anniversaire-alertes-api.onrender.com/telecharger?depuis=${date}`;
-
+  const url = `${baseURL}/telecharger?depuis=${date}`;
   const lien = document.createElement("a");
   lien.href = url;
   lien.download = "anniversaires.ics";
@@ -169,10 +149,10 @@ function telechargerICS() {
   document.body.removeChild(lien);
 }
 
-// ✅ Chargement automatique du fichier JSON
+// ✅ Chargement automatique depuis l’API Render
 let donneesAnniversaires = [];
 
-fetch('donnee.json')
+fetch(`${baseURL}/anniversaires`)
   .then(response => response.json())
   .then(data => {
     donneesAnniversaires = data;
@@ -181,6 +161,6 @@ fetch('donnee.json')
     afficherAnniversairesMois(donneesAnniversaires);
   })
   .catch((error) => {
-  console.error("Erreur de chargement du fichier JSON :", error);
-});
-
+    console.error("Erreur de chargement depuis l'API :", error);
+    afficherErreur("❌ Impossible de charger les données depuis le serveur.");
+  });
