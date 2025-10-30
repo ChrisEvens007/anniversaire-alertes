@@ -1,0 +1,15 @@
+# 📦 Empêche le dossier node_modules d'être versionné
+node_modules/
+
+# 🔐 Fichiers sensibles ou temporaires
+.env
+.DS_Store
+
+# 🛠 Logs et fichiers système
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 🧪 Dossiers de test ou de build (si tu en ajoutes plus tard)
+dist/
+build/
